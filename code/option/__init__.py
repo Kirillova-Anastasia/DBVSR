@@ -41,7 +41,7 @@ parser.add_argument('--test_padding', type=int, default=0,
                     help='the padding when test, then crop the extra part from output')
 parser.add_argument('--n_sequences', type=int, default=3,
                     help='the sequence number of every iteration')
-parser.add_argument('--n_frames_per_video', type=int, default=45,
+parser.add_argument('--n_frames_per_video', type=int, default=100,
                     help='the number of images used in every video')
 parser.add_argument('--scale', type=int, default=4,
                     help='scale factor of the model')
@@ -112,6 +112,10 @@ parser.add_argument('--print_every', type=int, default=100,
                     help='how many batches to wait before logging training status')
 parser.add_argument('--save_images', default=True, action='store_true',
                     help='save images')
+parser.add_argument('--test_model_path', type=str, default='',
+                    help='path to model')
+parser.add_argument('--save_dir_path', type=str, default='',
+                    help='where save result')
 
 args = parser.parse_args()
 template.set_template(args)

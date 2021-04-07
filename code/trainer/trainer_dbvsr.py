@@ -76,7 +76,7 @@ class TRAINER_DBVSR(Trainer):
         self.ckp.start_log(train=False)
         with torch.no_grad():
             tqdm_test = tqdm(self.loader_test, ncols=80)
-            for idx_img, (input, gt, filename, kernel, input_bic) in enumerate(tqdm_test):
+            for idx_img, (input, filename, kernel, input_bic) in enumerate(tqdm_test):
 
                 filename = filename[self.args.n_sequences // 2][0]
 
@@ -87,13 +87,9 @@ class TRAINER_DBVSR(Trainer):
 
                 input = input.to(self.device)
                 kernel = kernel.to(self.device)
-                gt = gt[:, self.args.n_sequences // 2, :, :, :].to(self.device)
                 input_bic = input_bic.to(self.device)
 
                 sr_output = self.model(input, input_bic, kernel)
-                PSNR = utils.calc_psnr(gt, sr_output, rgb_range=self.args.rgb_range, is_rgb=True)
-
-                self.ckp.report_log(PSNR, train=False)
 
                 if self.args.save_images:
                     sr_output = utils.postprocess(sr_output, rgb_range=self.args.rgb_range, ycbcr_flag=False,
@@ -101,15 +97,9 @@ class TRAINER_DBVSR(Trainer):
 
                     save_list = [sr_output]
 
-                    self.ckp.save_images(filename, save_list, self.args.testset)
+                    self.ckp.save_images(filename, save_list)
 
             self.ckp.end_log(len(self.loader_test), train=False)
-            best = self.ckp.psnr_log.max(0)
-            self.ckp.write_log(
-                '[{}]\taverage stage_PSNR: {:.3f}(Best: {:.3f} @epoch {})'.format(
-                    self.args.data_test,
-                    self.ckp.psnr_log[-1],
-                    best[0], best[1] + 1))
 
-            if not self.args.test_only:
+            if not self.args.test_only: 
                 self.ckp.save(self, epoch, is_best=(best[1] + 1 == epoch))

@@ -10,7 +10,5 @@ class VIDEOSR(videodata.VIDEODATA):
     def _set_filesystem(self, dir_data):
         print("Loading {} => {} DataSet".format("train" if self.train else "test", self.name))
         self.apath = dir_data
-        self.dir_gt = os.path.join(self.apath, 'HR')
-        self.dir_input = os.path.join(self.apath, 'LR')
-        print("DataSet gt path:", self.dir_gt)
+        self.dir_input = self.apath
         print("DataSet blur path:", self.dir_input)

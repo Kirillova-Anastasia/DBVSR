@@ -31,14 +31,13 @@ class Logger:
                 self.psnr_log = torch.load(self.dir + '/psnr_log.pt')
                 print('Continue from epoch {}...'.format(str(50)))
 
+        self.dir = self.args.save_dir_path
         if not os.path.exists(self.dir):
             os.makedirs(self.dir)
-            if not os.path.exists(self.dir + '/model'):
-                os.makedirs(self.dir + '/model')
-        if not os.path.exists(self.dir + '/result/' + self.args.data_test):
-            print("Creating dir for saving images...", self.dir + '/result/' + self.args.data_test)
-            os.makedirs(self.dir + '/result/' + self.args.data_test)
-
+        self.dir = self.dir + '/' + self.args.model
+        if not os.path.exists(self.dir):
+            os.makedirs(self.dir)
+                
         print('Save Path : {}'.format(self.dir))
 
         open_type = 'a' if os.path.exists(self.dir + '/log.txt') else 'w'
@@ -107,10 +106,12 @@ class Logger:
             imageio.imwrite('{}_{}.png'.format(filename, post), img)
 
 
-    def save_images(self, filename, save_list, testset):
+    def save_images(self, filename, save_list):
         if self.args.model == 'DBVSR':
             f = filename.split('.')
-            dirname = '{}/result/{}/{}/{}'.format(self.dir, self.args.data_test, testset, f[0])
+            #print(self.dir, f)
+            dirname = '{}/{}'.format(self.dir, f[0])
+            #print(dirname)
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
             filename = '{}/{}'.format(dirname, f[1])
